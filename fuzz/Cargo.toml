@@ -1,0 +1,29 @@
+
+[package]
+name = "num-bigint-fuzz"
+version = "0.0.1"
+authors = ["Automatically generated"]
+publish = false
+
+[package.metadata]
+cargo-fuzz = true
+
+[dependencies]
+openssl = "0.10.24"
+
+[dependencies.num-bigint]
+path = ".."
+[dependencies.libfuzzer-sys]
+git = "https://github.com/rust-fuzz/libfuzzer-sys.git"
+
+# Prevent this from interfering with workspaces
+[workspace]
+members = ["."]
+
+[[bin]]
+name = "mul"
+path = "fuzz_targets/mul.rs"
+
+[[bin]]
+name = "add"
+path = "fuzz_targets/add.rs"
