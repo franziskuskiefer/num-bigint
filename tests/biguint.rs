@@ -29,6 +29,37 @@ use consts::*;
 #[macro_use]
 mod macros;
 
+extern crate time;
+use time::{PreciseTime};
+fn multiply_time_inner(x: &str, y: u64) -> i64 {
+    let x = BigUint::from_str_radix(x, 16).unwrap();
+    let y = BigUint::from(y);
+
+    let start = PreciseTime::now();
+    let _z = &x * &y;
+    let end = PreciseTime::now();
+
+    let runtime_nanos = start.to(end).num_nanoseconds().expect("Benchmark iter took greater than 2^63 nanoseconds");
+    // runtime_nanos as f64 / 1_000_000_000.0
+    return runtime_nanos;
+}
+
+#[test]
+fn multiply_time() {
+    let times = 8192;
+    let a = "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
+    for i in 0..1025 {
+        let mut t = 0i64;
+        let b = i;
+        for _ in 0..times {
+            t = t + multiply_time_inner(a, b);
+        }
+        let avg = t/(times as i64);
+        // println!("Average time for {:?}*0x{:x?}: \t{:?} ns", a, b, avg);
+        println!("{:?}, {:?}", i, avg);
+    }
+}
+
 #[test]
 fn test_from_bytes_be() {
     fn check(s: &str, result: &str) {
