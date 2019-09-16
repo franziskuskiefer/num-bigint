@@ -31,9 +31,10 @@ mod macros;
 
 extern crate time;
 use time::{PreciseTime};
-fn multiply_time_inner(x: &str, y: u64) -> i64 {
+use std::ops::Shl;
+fn multiply_time_inner(x: &str, i: usize) -> i64 {
     let x = BigUint::from_str_radix(x, 16).unwrap();
-    let y = BigUint::from(y);
+    let y = BigUint::one().shl(i);
 
     let start = PreciseTime::now();
     let _z = &x * &y;
@@ -48,11 +49,11 @@ fn multiply_time_inner(x: &str, y: u64) -> i64 {
 fn multiply_time() {
     let times = 8192;
     let a = "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
-    for i in 0..1025 {
+    for i in 0..513 {
         let mut t = 0i64;
-        let b = i;
+        // let b = 1 as u128 << i;
         for _ in 0..times {
-            t = t + multiply_time_inner(a, b);
+            t = t + multiply_time_inner(a, i);
         }
         let avg = t/(times as i64);
         // println!("Average time for {:?}*0x{:x?}: \t{:?} ns", a, b, avg);
